@@ -2,6 +2,12 @@
 controller_validate_certs: false
 controller_configuration_async_delay: 3
 
+controller_settings:
+  - name: CUSTOM_LOGIN_INFO
+    value: 'No matter where you go... there you are'
+  - name: CUSTOM_LOGO
+    value: 'data:image/png;base64,{{ lookup("file", controller_postinstall_dir + "/zen-bull.b64") }}'
+
 controller_credentials:
   - name: Controller Credential
     organization: Default
