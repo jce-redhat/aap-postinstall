@@ -1,0 +1,5 @@
+# aap-postinstall
+
+This is an example repo that can be used by the new Ansible Automation Platform containerized installer [postinstall](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/2.4/html-single/containerized_ansible_automation_platform_installation_guide/index#using-postinstall_aap-containerized-installation) feature. It takes a configuration-as-code approach to configuring AAP, using Ansible collections such as [infra.controller_configuration](https://console.redhat.com/ansible/automation-hub/repo/validated/infra/controller_configuration) and [infra.ah_configuration](https://console.redhat.com/ansible/automation-hub/repo/validated/infra/ah_configuration).
+
+Note that the postinstall feature uses the `ansible.builtin.include_vars` module with the `dir` argument to recursively include all files in the repo ending in ".yml" and ".yaml".  This means that the only YAML files in a postinstall repo should be Ansible variable files.  Any other YAML files such as playbooks will result in an error from the postinstall feature.
