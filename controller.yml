@@ -2,6 +2,37 @@
 controller_validate_certs: false
 controller_configuration_async_delay: 3
 
+controller_credential_types:
+  - name: Private Automation Hub API Access
+    kind: cloud
+    description: >-
+      Credentials used by the infra.ah_configuration collection for
+      API access to a private automation hub
+    inputs:
+      fields:
+        - id: ah_host
+          type: string
+          label: Private Automation Hub Hostname
+        - id: ah_username
+          type: string
+          label: Private Automation Hub Username
+        - id: ah_password
+          type: string
+          label: Private Automation Hub Password
+          secret: true
+        - id: ah_token
+          type: string
+          label: Private Automation Hub Token
+          secret: true
+      required:
+        - ah_host
+    injectors:
+      env:
+        AH_HOST: !unsafe '{{ ah_host }}'
+        AH_USERNAME: !unsafe '{{ ah_username }}'
+        AH_PASSWORD: !unsafe '{{ ah_password }}'
+        AH_TOKEN: !unsafe '{{ ah_token }}'
+
 controller_credentials:
   - name: Controller Credential
     organization: Default
@@ -20,6 +51,14 @@ controller_credentials:
       password: ''
       ssh_key_data: '{{ vault_deploy_key_private_data | default("") }}'
       ssh_key_unlock: ''
+  - name: AAP Private Automation Hub Credential
+    organization: Default
+    credential_type: Private Automation Hub API Access
+    inputs:
+      ah_host: https://{{ groups.automationhub[0] }}:8444
+      ah_username: admin
+      ah_password: ''
+    update_secrets: false
 
 controller_execution_environments:
   - name: Product Demos EE
