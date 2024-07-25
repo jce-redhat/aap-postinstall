@@ -1,0 +1,26 @@
+---
+ah_validate_certs: false
+ah_configuration_async_delay: 3
+
+ah_namespaces:
+  - name: test_namespace
+    state: present
+    description: 'Test Namespace'
+
+ah_ee_registries:
+  - name: registry.redhat.io
+    state: present
+    url: https://registry.redhat.io/
+
+ah_ee_repositories:
+  - name: ansible-automation-platform-24/ee-supported-rhel8
+    state: present
+    description: ee-supported-rhel8 from the AAP 2.4 namespace
+    registry: registry.redhat.io
+    upstream_name: ansible-automation-platform-24/ee-supported-rhel8
+    include_tags:
+      - latest
+    exclude_tags:
+      - sha256-*
+
+...
