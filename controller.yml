@@ -57,8 +57,7 @@ controller_credentials:
     inputs:
       ah_host: https://{{ groups.automationhub[0] }}:8444
       ah_username: admin
-      ah_password: ''
-    update_secrets: false
+      ah_password: '{{ hub_admin_password }}'
 
 controller_execution_environments:
   - name: Product Demos EE
