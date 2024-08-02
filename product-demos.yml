@@ -1,0 +1,88 @@
+# from https://github.com/RedHatGov/ansible-tower-samples/blob/master/product_demos.yml
+---
+controller_validate_certs: false
+controller_configuration_async_delay: 3
+controller_settings:
+  - name: AWX_COLLECTIONS_ENABLED
+    value: "false"
+controller_credentials:
+  - name: Automation Hub
+    organization: Default
+    credential_type: Ansible Galaxy/Automation Hub API Token
+    update_secrets: false
+    inputs:
+      url: https://console.redhat.com/api/automation-hub/
+      auth_url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
+  - name: Controller Credential
+    organization: Default
+    credential_type: Red Hat Ansible Automation Platform
+    inputs:
+      host: https://{{ groups.automationcontroller[0] }}
+      username: admin
+      password: '{{ controller_admin_password }}'
+      # set to false when using self-signed certs
+      verify_ssl: false
+controller_execution_environments:
+  - name: Product Demos EE
+    image: quay.io/acme_corp/product-demos-ee:latest
+controller_organizations:
+  - name: Default
+    galaxy_credentials:
+      - Ansible Galaxy
+      - Automation Hub
+controller_projects:
+  - name: Ansible official demo project
+    organization: Default
+    scm_type: git
+    scm_url: https://github.com/ansible/product-demos
+    scm_branch: main
+    default_environment: Product Demos EE
+    wait: true
+controller_templates:
+  - name: "Product Demos | Single demo setup"
+    job_type: run
+    inventory: "Demo Inventory"
+    project: "Ansible official demo project"
+    playbook: "setup_demo.yml"
+    credentials: "Controller Credential"
+    allow_simultaneous: true
+    survey_enabled: true
+    survey_spec:
+      name: 'Survey'
+      description: ''
+      spec:
+        - type: multiplechoice
+          question_name: Demo Category
+          variable: demo
+          required: true
+          choices:
+            - linux
+            - windows
+            - cloud
+            - network
+            - openshift
+            - satellite
+  - name: "Product Demos | Multi-demo setup"
+    project: "Ansible official demo project"
+    playbook: "multi_select_setup.yml"
+    inventory: "Demo Inventory"
+    credentials: "Controller Credential"
+    survey_enabled: true
+    survey:
+      name: ''
+      description: ''
+      spec:
+        - question_name: "Which demos do you want to configure?"
+          type: multiselect
+          variable: demos
+          required: true
+          default: "cloud\nlinux\nnetwork\nopenshift\nwindows"
+          choices:
+            - cloud
+            - linux
+            - network
+            - openshift
+            - satellite
+            - windows
+
+...
